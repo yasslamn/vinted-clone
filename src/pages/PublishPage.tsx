@@ -8,8 +8,8 @@ export default function PublishPage() {
   const navigate = useNavigate();
 
   const createArticleMutation = useMutation({
-    mutationFn: async (article: ArticleFormValues): Promise<{ id: string }> => {
-      return await api.post("/api/articles", article);
+    mutationFn: (article: ArticleFormValues): Promise<{ id: string }> => {
+      return api.post("/api/articles", article);
     },
     onSuccess: (data: { id: string }) => {
       navigate("/articles/" + data.id);
