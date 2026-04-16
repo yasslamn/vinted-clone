@@ -7,7 +7,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function EditArticlePage() {
-
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const articleId = useParams().id;
@@ -32,7 +31,7 @@ export default function EditArticlePage() {
       queryClient.invalidateQueries({ queryKey: ["articles"] });
       queryClient.invalidateQueries({ queryKey: ["article", articleId] });
       navigate("/articles/" + articleId);
-    }
+    },
   });
 
   const updateArticleHandler = (data: ArticleFormValues) => {
@@ -61,6 +60,8 @@ export default function EditArticlePage() {
       <ArticleForm
         onSubmit={updateArticleHandler}
         initialValues={getArticleQuery.data}
+        isSubmitting={updateArticleMutation.isPending}
+        isDraft={false}
       />
     </>
   );

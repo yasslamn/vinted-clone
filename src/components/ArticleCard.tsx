@@ -31,7 +31,7 @@ export default function ArticleCard({
         <span>{article.size}</span>
       </div>
       {(onEdit || onDelete) && (
-        <div className="flex gap-2 p-3 pt-0">
+        <div className="flex justify-center gap-2 p-3 pt-0">
           {onEdit && (
             <button
               onClick={onEdit}
