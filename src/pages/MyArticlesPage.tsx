@@ -3,6 +3,7 @@ import { api } from "../services/api";
 import { getUserId } from "../lib/userId";
 import type { Article } from "../types/article";
 import { useNavigate } from "react-router-dom";
+import ArticleCard from "@/components/ArticleCard";
 
 export default function MyArticlesPage() {
   const queryClient = useQueryClient();
@@ -64,8 +65,8 @@ export default function MyArticlesPage() {
         <ArticleCard
           key={article.id}
           article={article}
-          onDelete={deleteArticleHandler}
-          onEdit={onEditHandler}
+          onDelete={() => deleteArticleHandler(article.id)}
+          onEdit={() => onEditHandler(article.id)}
         />
       ))}
     </>

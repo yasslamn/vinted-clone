@@ -6,7 +6,7 @@ interface ArticleCardProps {
   onDelete?: () => void;
 }
 
-export default function ArticleCardComponent({
+export default function ArticleCard({
   article,
   onEdit,
   onDelete,
