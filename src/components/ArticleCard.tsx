@@ -14,11 +14,11 @@ export default function ArticleCard({
   onDelete,
 }: ArticleCardProps) {
   return (
-    <div className="w-48 rounded-xl bg-white shadow transition-shadow hover:shadow-lg overflow-hidden">
+    <div className="w-full rounded-xl bg-white shadow transition-shadow hover:shadow-lg overflow-hidden">
       <img
         src={article.imageUrl}
         alt={article.title}
-        className="h-48 w-full object-cover"
+        className="aspect-square w-full object-cover"
       />
       <div className="p-3">
         <p className="text-base font-semibold">{article.price} €</p>
