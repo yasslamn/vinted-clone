@@ -2,6 +2,16 @@ import { getUserId } from "../lib/userId";
 
 const userName = import.meta.env.VITE_USER_NAME || "Utilisateur anonyme";
 
+async function handleResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(
+      (body as { error?: string }).error ?? `Erreur ${response.status}`,
+    );
+  }
+  return response.json() as Promise<T>;
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -9,16 +19,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     ...(options.headers as Record<string, string>),
   };
 
-  const response = await fetch(path, { ...options, headers });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(
-      (error as { error?: string }).error || `Erreur HTTP ${response.status}`,
-    );
-  }
-
-  return response.json() as Promise<T>;
+  const response = await fetch(path, { ...options, headers }).then((res) =>
+    handleResponse<T>(res),
+  );
+  return response;
 }
 
 export const api = {
