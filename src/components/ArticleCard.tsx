@@ -13,12 +13,12 @@ export default function ArticleCard({
   onDelete,
 }: ArticleCardProps) {
   return (
-    <div className="w-full rounded-xl bg-white shadow transition-shadow hover:shadow-lg overflow-hidden">
+    <div className="w-48 rounded-xl bg-white shadow transition-shadow hover:shadow-lg overflow-hidden">
       <Link to={"/articles/" + article.id}>
         <img
           src={article.imageUrl}
           alt={article.title}
-        className="aspect-square w-full object-cover"
+          className="h-48 w-full object-cover"
         />
       </Link>
       <div className="p-3">
