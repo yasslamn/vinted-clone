@@ -1,10 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ArticleFormValues } from "../schemas/article";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
 import ArticleForm from "../components/ArticleForm";
 
 export default function PublishPage() {
+  const queryClient = useQueryClient();
+  
   const navigate = useNavigate();
 
   const createArticleMutation = useMutation({
@@ -12,6 +14,8 @@ export default function PublishPage() {
       return api.post("/api/articles", article);
     },
     onSuccess: (data: { id: string }) => {
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+      queryClient.invalidateQueries({ queryKey: ["user-articles"] });
       navigate("/articles/" + data.id);
     },
   });

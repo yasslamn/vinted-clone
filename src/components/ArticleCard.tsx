@@ -37,7 +37,7 @@ export default function ArticleCard({
               onClick={onEdit}
               className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100"
             >
-              Edit
+              Modifier
             </button>
           )}
           {onDelete && (
@@ -45,7 +45,7 @@ export default function ArticleCard({
               onClick={onDelete}
               className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
             >
-              Delete
+              Supprimer
             </button>
           )}
         </div>
