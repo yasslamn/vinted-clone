@@ -1,39 +1,35 @@
 import type { Article } from "@/types/article";
+import { Link } from "react-router-dom";
 
 interface ArticleCardProps {
   article: Article;
-  seeDetails?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 }
 
 export default function ArticleCard({
   article,
-  seeDetails,
   onEdit,
   onDelete,
 }: ArticleCardProps) {
   return (
     <div className="w-48 rounded-xl bg-white shadow transition-shadow hover:shadow-lg overflow-hidden">
-      <img
-        src={article.imageUrl}
-        alt={article.title}
-        className="h-48 w-full object-cover"
-      />
+      <Link to={"/articles/" + article.id}>
+        <img
+          src={article.imageUrl}
+          alt={article.title}
+          className="h-48 w-full object-cover"
+        />
+      </Link>
       <div className="p-3">
         <p className="text-base font-semibold">{article.price} €</p>
-        <p className="text-sm text-gray-500 truncate">{article.title}</p>
+        <Link to={"/articles/" + article.id}>
+          <p className="text-sm text-gray-500 truncate">{article.title}</p>
+        </Link>
       </div>
       <div className="px-3 pb-2 text-xs text-gray-400">
         <span>{article.size}</span>
       </div>
-      {seeDetails && (
-        <div className="px-3 pb-2">
-          <button className="text-xs text-gray-400 bg-green-300 rounded-2xl px-2 py-1 hover:bg-green-400 hover:cursor-pointer">
-            Voir détails
-          </button>
-        </div>
-      )}
       {(onEdit || onDelete) && (
         <div className="flex gap-2 p-3 pt-0">
           {onEdit && (

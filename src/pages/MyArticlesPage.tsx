@@ -60,7 +60,7 @@ export default function MyArticlesPage() {
   }
   // Else return the list of articles with the ArticleCard component
   return (
-    <>
+    <div className="flex flex-wrap gap-6">
       {getUserArticlesQuery.data.map((article) => (
         <ArticleCard
           key={article.id}
@@ -69,6 +69,6 @@ export default function MyArticlesPage() {
           onEdit={() => onEditHandler(article.id)}
         />
       ))}
-    </>
+    </div>
   );
 }
