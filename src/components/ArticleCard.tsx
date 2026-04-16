@@ -2,12 +2,14 @@ import type { Article } from "@/types/article";
 
 interface ArticleCardProps {
   article: Article;
+  seeDetails?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 }
 
 export default function ArticleCard({
   article,
+  seeDetails,
   onEdit,
   onDelete,
 }: ArticleCardProps) {
@@ -25,6 +27,13 @@ export default function ArticleCard({
       <div className="px-3 pb-2 text-xs text-gray-400">
         <span>{article.size}</span>
       </div>
+      {seeDetails && (
+        <div className="px-3 pb-2">
+          <button className="text-xs text-gray-400 bg-green-300 rounded-2xl px-2 py-1 hover:bg-green-400 hover:cursor-pointer">
+            Voir détails
+          </button>
+        </div>
+      )}
       {(onEdit || onDelete) && (
         <div className="flex gap-2 p-3 pt-0">
           {onEdit && (
