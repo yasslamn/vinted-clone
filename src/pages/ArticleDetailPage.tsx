@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 type UserIconProps = {
   className?: string;
@@ -24,6 +24,17 @@ function UserIcon({ className }: UserIconProps) {
   );
 }
 
+type ErrorMessageProps = {
+  message: string;
+}
+
+function ErrorMessage({message}: ErrorMessageProps){
+  return <div className="w-full text-center">
+    <p className="text-5xl mb-10">{message}</p>
+    <Link to="/" className="text-neutral-400">Revenir au catalogue</Link>
+  </div>
+}
+
 export default function ArticleDetailPage() {
   let params = useParams();
 
@@ -33,7 +44,19 @@ export default function ArticleDetailPage() {
 
   const {isPending, isError, data, error} = useQuery({
     queryKey: ['article'],
-    queryFn: () => fetch(`/api/articles/${articleId}`).then((res) => res.json()),
+    queryFn: async () => {
+      const response = fetch(`/api/articles${articleId}`);
+      if (! (await response).ok){
+        if ((await response).status === 404){
+          throw new Error("Article inexistant.");
+        } else {
+          throw new Error("Une erreur est survenue.")
+        }
+      }
+      return (await response).json();
+    },
+    retry: 2,
+    retryDelay: 250,
   });
 
   if (isPending){
@@ -41,8 +64,7 @@ export default function ArticleDetailPage() {
   }
 
   if (isError){
-    console.log(`Une erreur est survenue : ${error.message}`);
-    return <p>Une erreur est survenue.</p>;
+    return <ErrorMessage message={error.message}></ErrorMessage>;
   }
 
   let createdAtFormatted = new Date(Date.parse(data.createdAt));
@@ -53,11 +75,12 @@ export default function ArticleDetailPage() {
   })
 
   return (
-    <div className="flex mt-4">
+    <div className="flex justify-between flex-col mt-4 w-max">
+    <div className="flex">
       <img
         src={data.imageUrl}
         alt={`Photo du produit : ${data.description}`}
-        className="mx-4 rounded-md"
+        className="mr-4 rounded-md"
       />
       <div className="flex gap-1 flex-col ">
         <div className="flex flex-1">
@@ -79,8 +102,10 @@ export default function ArticleDetailPage() {
           <p className="p-1 font-semibold border border-neutral-500 rounded-lg ">{data.condition}</p>
         </div>
         <h2 className="text-teal-600 text-3xl">{data.price} €</h2>
-        <p className="flex-initial">{createdAtFormatted.toLocaleDateString(undefined, dateFormatOptions)}</p>
+        <p className="flex-initial">Publiée le {createdAtFormatted.toLocaleDateString(undefined, dateFormatOptions)}</p>
       </div>
+    </div>
+    <Link to="/" className="text-neutral-400">Revenir au catalogue</Link>
     </div>
   );
 }
