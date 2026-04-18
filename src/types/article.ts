@@ -43,3 +43,14 @@ export const CONDITIONS: Condition[] = [
   { value: "bon_etat", label: "Bon état" },
   { value: "satisfaisant", label: "Satisfaisant" },
 ];
+
+export type Sort = {
+  id: string;
+  label: string;
+};
+export const ORDERBY: Sort[] = [
+  { label: "Prix croissant", id: "price_asc" },
+  { label: "Prix décroissant", id: "price_desc" },
+  { label: "Plus récent", id: "createdAt_desc" },
+  { label: "Plus ancien", id: "createdAt_asc" },
+];
