@@ -1,5 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { api } from "../services/api";
+import { CATEGORIES, CONDITIONS, type Article } from "../types/article";
+import { getUserId } from "../lib/userId";
 
 type UserIconProps = {
   className?: string;
@@ -11,13 +14,13 @@ function UserIcon({ className }: UserIconProps) {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      stroke-width="1.5"
+      strokeWidth="1.5"
       stroke="currentColor"
       className={className}
     >
       <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
       />
     </svg>
@@ -29,35 +32,41 @@ type ErrorMessageProps = {
 }
 
 function ErrorMessage({message}: ErrorMessageProps){
-  return <div className="w-full text-center">
-    <p className="text-5xl mb-10">{message}</p>
-    <Link to="/" className="text-neutral-400">Revenir au catalogue</Link>
+  return <div className="w-full text-center py-12">
+    <p className="text-xl text-gray-700 mb-4">{message}</p>
+    <Link to="/" className="text-teal-600 hover:text-teal-700 text-sm">Revenir au catalogue</Link>
   </div>
 }
 
 export default function ArticleDetailPage() {
-  let params = useParams();
+  const params = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const userId = getUserId();
 
   if (!params.id) return;
 
-  let articleId: string = params.id;
+  const articleId: string = params.id;
 
   const {isPending, isError, data, error} = useQuery({
-    queryKey: ['article'],
-    queryFn: async () => {
-      const response = fetch(`/api/articles${articleId}`);
-      if (! (await response).ok){
-        if ((await response).status === 404){
-          throw new Error("Article inexistant.");
-        } else {
-          throw new Error("Une erreur est survenue.")
-        }
-      }
-      return (await response).json();
-    },
-    retry: 2,
-    retryDelay: 250,
+    queryKey: ['article', articleId],
+    queryFn: () => api.get<Article>(`/api/articles/${articleId}`),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => api.delete(`/api/articles/${articleId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+      queryClient.invalidateQueries({ queryKey: ["user-articles"] });
+      navigate("/my-articles");
+    },
+  });
+
+  const handleDelete = () => {
+    if (window.confirm("Supprimer cet article ?")) {
+      deleteMutation.mutate();
+    }
+  };
 
   if (isPending){
     return <p>Chargement...</p>;
@@ -67,45 +76,69 @@ export default function ArticleDetailPage() {
     return <ErrorMessage message={error.message}></ErrorMessage>;
   }
 
-  let createdAtFormatted = new Date(Date.parse(data.createdAt));
-  let dateFormatOptions = new Intl.DateTimeFormat(undefined, {
+  const createdAtFormatted = new Date(data.createdAt);
+  const dateFormatOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric'
-  })
+  };
 
   return (
-    <div className="flex justify-between flex-col mt-4 w-max">
-    <div className="flex">
-      <img
-        src={data.imageUrl}
-        alt={`Photo du produit : ${data.description}`}
-        className="mr-4 rounded-md"
-      />
-      <div className="flex gap-1 flex-col ">
-        <div className="flex flex-1">
-          <UserIcon className={"size-6"}></UserIcon>
-          <p>{data.userName}</p>
+    <div className="space-y-6">
+      <Link to="/" className="inline-block text-sm text-teal-600 hover:text-teal-700">&larr; Revenir au catalogue</Link>
+
+      <div className="flex flex-col md:flex-row gap-8">
+        <img
+          src={data.imageUrl}
+          alt={`Photo du produit : ${data.title}`}
+          className="w-full md:w-96 rounded-lg object-cover aspect-square"
+        />
+
+        <div className="flex flex-col gap-4 min-w-0">
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <UserIcon className="size-5" />
+            <span>{data.userName}</span>
+          </div>
+
+          <h1 className="text-2xl font-bold text-gray-900">{data.title}</h1>
+          <p className="text-2xl font-semibold text-teal-600">{data.price} €</p>
+          <p className="text-gray-600">{data.description}</p>
+
+          <div className="flex flex-wrap gap-3 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400">Taille</span>
+              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">{data.size}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400">Catégorie</span>
+              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">{CATEGORIES.find((c) => c.id === data.category)?.label ?? data.category}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-400">État</span>
+              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">{CONDITIONS.find((c) => c.value === data.condition)?.label ?? data.condition}</span>
+            </div>
+          </div>
+
+          <p className="text-sm text-gray-400">Publiée le {createdAtFormatted.toLocaleDateString(undefined, dateFormatOptions)}</p>
+
+          {data.userId === userId && (
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => navigate(`/articles/${articleId}/edit`)}
+                className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100"
+              >
+                Modifier
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 text-sm bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Supprimer
+              </button>
+            </div>
+          )}
         </div>
-        <h1 className="flex-1 font-semibold text-3xl">{data.title}</h1>
-        <h2 className="flex-2 font-normal">{data.description}</h2>
-        <div className="flex-none flex gap-2 text-md">
-          <p className="text-neutral-500 my-auto">taille</p>
-          <p className="p-1 font-semibold border border-neutral-500 rounded-lg ">{data.size}</p>
-        </div>
-        <div className="flex-none flex gap-2 text-md">
-          <p className="text-neutral-500 my-auto">catégorie</p>
-          <p className="p-1 font-semibold border border-neutral-500 rounded-lg ">{data.category}</p>
-        </div>
-        <div className="flex-none flex gap-2 text-md">
-          <p className="text-neutral-500 my-auto">état</p>
-          <p className="p-1 font-semibold border border-neutral-500 rounded-lg ">{data.condition}</p>
-        </div>
-        <h2 className="text-teal-600 text-3xl">{data.price} €</h2>
-        <p className="flex-initial">Publiée le {createdAtFormatted.toLocaleDateString(undefined, dateFormatOptions)}</p>
       </div>
-    </div>
-    <Link to="/" className="text-neutral-400">Revenir au catalogue</Link>
     </div>
   );
 }
