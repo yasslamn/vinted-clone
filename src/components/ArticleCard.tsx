@@ -1,19 +1,96 @@
 import type { Article } from "@/types/article";
 import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Star } from "lucide-react";
+import { api } from "@/services/api";
+import { useState } from "react";
 
 interface ArticleCardProps {
   article: Article;
   onEdit?: () => void;
   onDelete?: () => void;
+  isFavorite: boolean;
 }
 
 export default function ArticleCard({
   article,
   onEdit,
   onDelete,
+  isFavorite,
 }: ArticleCardProps) {
+  const [favorite, setFavorite] = useState<boolean>(isFavorite);
+  const queryClient = useQueryClient();
+
+  const removeFromFavMutation = useMutation({
+    mutationFn: async (articleId: string) => {
+      await api.delete(`/api/favorites/${articleId}`);
+    },
+    onMutate: async (articleId) => {
+      await queryClient.cancelQueries({ queryKey: ["favorites-list"] });
+
+      const previousFavorites = queryClient.getQueryData(["favorites-list"]);
+
+      queryClient.setQueryData(["favorites-list"], (old: Article[] = []) => {
+        const exists = old.some((f) => f.id === articleId);
+        if (exists) {
+          return old.filter((f) => f.id !== articleId);
+        }
+        return [...old, article];
+      });
+
+      return { previousFavorites };
+    },
+    onError: (err, articleId, context) => {
+      queryClient.setQueryData(["favorites-list"], context?.previousFavorites);
+    },
+  });
+
+  const addToFavMutation = useMutation({
+    mutationFn: async (articleId: string) => {
+      await api.post(`/api/favorites/${articleId}`, {});
+    },
+    onMutate: async (articleId) => {
+      //Annuler requêtes en cours
+      await queryClient.cancelQueries({ queryKey: ["favorites-list"] });
+
+      //Sauvragrde de l'ancien état
+      const previousFavorites = queryClient.getQueryData(["favorites-list"]);
+
+      // Mise à jour du cache en partant du principe que ça va être good (optimistic update)
+      queryClient.setQueryData(["favorites-list"], (old: Article[] = []) => {
+        const exists = old.some((f) => f.id === articleId);
+        if (exists) {
+          return old.filter((f) => f.id !== articleId); // Retirer
+        }
+        return [...old, article]; // Ajouter
+      });
+
+      return { previousFavorites };
+    },
+    onError: (err, articleId, context) => {
+      queryClient.setQueryData(["favorites-list"], context?.previousFavorites); // si erreur on revient à l'état précédent
+    },
+  });
+
+  function handleToggleFav(artcileIdToAdd: string) {
+    if (!favorite) {
+      addToFavMutation.mutateAsync(artcileIdToAdd);
+    } else {
+      removeFromFavMutation.mutateAsync(artcileIdToAdd);
+    }
+    setFavorite(!favorite);
+  }
+
   return (
-    <div className="w-full rounded-xl bg-white shadow transition-shadow hover:shadow-lg overflow-hidden">
+    <div className="relative w-full rounded-xl bg-white shadow transition-shadow hover:shadow-lg overflow-hidden">
+      <button
+        onClick={() => handleToggleFav(article.id)}
+        className="absolute top-2 right-2 z-10 p-1 bg-white/80 rounded-full hover:bg-white"
+      >
+        <Star
+          className={`w-5 h-5 ${favorite ? "text-yellow-500 fill-yellow-500" : "text-gray-600 hover:text-yellow-500"}`}
+        />
+      </button>
       <Link to={"/articles/" + article.id}>
         <img
           src={article.imageUrl}

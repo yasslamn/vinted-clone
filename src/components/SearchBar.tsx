@@ -36,75 +36,114 @@ export const SearchBar = ({
   const [sort, setSort] = useState<Sort>({ label: "", id: "" });
 
   return (
-    <div className="flex gap-4 mb-6">
-      <input
-        type="text"
-        value={search}
-        placeholder="Rechercher un article..."
-        onChange={(e) => {
-          const value = e.target.value;
-          setSearch(value);
-          onSearch(value);
-        }}
-        className="flex-1 px-4 py-2 border rounded-lg"
-      />
-      <select
-        value={category.id}
-        onChange={(e) => {
-          const selected = CATEGORIES.find(
-            (cat) => cat.id === e.target.value,
-          ) ?? { id: "", label: "" };
-          setCategory(selected);
-          onCategoryChange(selected);
-        }}
-        className="px-4 py-2 border rounded-lg"
-      >
-        <option value="">Toutes les catégories</option>
-        {CATEGORIES.map((cat) => (
-          <option key={cat.id} value={cat.id}>
-            {cat.label}
-          </option>
-        ))}
-      </select>
-      <select
-        value={condition.value}
-        onChange={(e) => {
-          const selected = CONDITIONS.find(
-            (cond) => cond.value === e.target.value,
-          ) ?? { value: "", label: "" };
+    <div className="bg-white rounded-xl shadow-md p-4 mb-6">
+      <div className="flex flex-col gap-4">
+        {/* Barre de recherche */}
+        <input
+          type="text"
+          value={search}
+          placeholder="Rechercher un article..."
+          onChange={(e) => {
+            const value = e.target.value;
+            setSearch(value);
+            onSearch(value);
+          }}
+          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+        />
 
-          setCondition(selected);
-          onConditionChange(selected);
-        }}
-        className="px-4 py-2 border rounded-lg"
-      >
-        <option value="">Tous les états</option>
-        {CONDITIONS.map((cond) => (
-          <option key={cond.value} value={cond.value}>
-            {cond.label}
-          </option>
-        ))}
-      </select>
+        {/* Filtres */}
+        <div className="flex flex-wrap gap-3">
+          <select
+            value={category.id}
+            onChange={(e) => {
+              const selected = CATEGORIES.find(
+                (cat) => cat.id === e.target.value,
+              ) ?? { id: "", label: "" };
+              setCategory(selected);
+              onCategoryChange(selected);
+            }}
+            className="flex-1 min-w-[150px] px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          >
+            <option value="">Toutes les catégories</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
 
-      <select
-        value={sort.id}
-        onChange={(e) => {
-          const selected = ORDERBY.find(
-            (sort) => sort.id === e.target.value,
-          ) ?? { id: "", label: "" };
+          <select
+            value={condition.value}
+            onChange={(e) => {
+              const selected = CONDITIONS.find(
+                (cond) => cond.value === e.target.value,
+              ) ?? { value: "", label: "" };
+              setCondition(selected);
+              onConditionChange(selected);
+            }}
+            className="flex-1 min-w-[150px] px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          >
+            <option value="">Tous les états</option>
+            {CONDITIONS.map((cond) => (
+              <option key={cond.value} value={cond.value}>
+                {cond.label}
+              </option>
+            ))}
+          </select>
 
-          setSort(selected);
-          onSortChange(selected);
-        }}
-        className="px-4 py-2 border rounded-lg"
-      >
-        <option value="">Trier Par</option>
-        {ORDERBY.map((orderBy) => (
-          <option key={orderBy.id} value={orderBy.id}>
-            {orderBy.label}
-          </option>
-        ))}
-      </select>
+          <select
+            value={sort.id}
+            onChange={(e) => {
+              const selected = ORDERBY.find(
+                (s) => s.id === e.target.value,
+              ) ?? { id: "", label: "" };
+              setSort(selected);
+              onSortChange(selected);
+            }}
+            className="flex-1 min-w-[150px] px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          >
+            <option value="">Trier par</option>
+            {ORDERBY.map((orderBy) => (
+              <option key={orderBy.id} value={orderBy.id}>
+                {orderBy.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Prix min/max */}
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-500 font-medium">Prix :</span>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              value={priceMin || ""}
+              placeholder="Min"
+              min={0}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setPriceMin(value);
+                onPriceMinChange(value);
+              }}
+              className="w-24 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+            <span className="text-gray-400">-</span>
+            <input
+              type="number"
+              value={priceMax || ""}
+              placeholder="Max"
+              min={0}
+              onChange={(e) => {
+                const value = Number(e.target.value);
+                setPriceMax(value);
+                onPriceMaxChange(value);
+              }}
+              className="w-24 px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+            <span className="text-sm text-gray-400">€</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

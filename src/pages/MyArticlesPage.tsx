@@ -4,9 +4,12 @@ import { getUserId } from "../lib/userId";
 import type { Article } from "../types/article";
 import { Link, useNavigate } from "react-router-dom";
 import ArticleCard from "@/components/ArticleCard";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export default function MyArticlesPage() {
   const queryClient = useQueryClient();
+
+  const { favoriteIds } = useFavorites();
 
   // Get All From User Query
   const userId = getUserId();
@@ -76,6 +79,7 @@ export default function MyArticlesPage() {
           article={article}
           onDelete={() => deleteArticleHandler(article.id)}
           onEdit={() => onEditHandler(article.id)}
+          isFavorite={favoriteIds.has(article.id)}
         />
       ))}
     </div>

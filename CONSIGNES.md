@@ -20,14 +20,14 @@ Le projet est fourni sous forme d'un **scaffold** (repo GitHub) contenant :
 
 ## 2. Modalités
 
-| Aspect | Détail |
-| --- | --- |
-| Équipes | Groupes de 3 étudiants |
-| Travail | Hors cours, sur temps personnel (~5 semaines) |
-| Rendu | Repository GitHub fonctionnel |
-| Soutenance | ~15 min par groupe — **6 mai 2026** |
+| Aspect     | Détail                                                                              |
+| ---------- | ----------------------------------------------------------------------------------- |
+| Équipes    | Groupes de 3 étudiants                                                              |
+| Travail    | Hors cours, sur temps personnel (~5 semaines)                                       |
+| Rendu      | Repository GitHub fonctionnel                                                       |
+| Soutenance | ~15 min par groupe — **6 mai 2026**                                                 |
 | Ressources | Libres (IA incluse), mais **tout le code doit pouvoir être expliqué en soutenance** |
-| Git | Contributions des 3 membres visibles dans l'historique, commits réguliers |
+| Git        | Contributions des 3 membres visibles dans l'historique, commits réguliers           |
 
 ---
 
@@ -162,47 +162,47 @@ const userId = useCurrentUserId();
 
 #### Articles
 
-| Méthode | Route | Description |
-| --- | --- | --- |
-| `GET` | `/api/articles` | Liste des articles (avec filtres, voir ci-dessous) |
-| `GET` | `/api/articles/:id` | Détail d'un article |
-| `POST` | `/api/articles` | Créer un article |
-| `PUT` | `/api/articles/:id` | Modifier un article (vous devez en être le propriétaire) |
-| `DELETE` | `/api/articles/:id` | Supprimer un article (vous devez en être le propriétaire) |
-| `GET` | `/api/users/:userId/articles` | Liste des articles d'un utilisateur |
+| Méthode  | Route                         | Description                                               |
+| -------- | ----------------------------- | --------------------------------------------------------- |
+| `GET`    | `/api/articles`               | Liste des articles (avec filtres, voir ci-dessous)        |
+| `GET`    | `/api/articles/:id`           | Détail d'un article                                       |
+| `POST`   | `/api/articles`               | Créer un article                                          |
+| `PUT`    | `/api/articles/:id`           | Modifier un article (vous devez en être le propriétaire)  |
+| `DELETE` | `/api/articles/:id`           | Supprimer un article (vous devez en être le propriétaire) |
+| `GET`    | `/api/users/:userId/articles` | Liste des articles d'un utilisateur                       |
 
 #### Favoris
 
-| Méthode | Route | Description |
-| --- | --- | --- |
-| `GET` | `/api/favorites` | Liste de vos favoris |
-| `POST` | `/api/favorites/:articleId` | Ajouter un favori |
-| `DELETE` | `/api/favorites/:articleId` | Retirer un favori |
+| Méthode  | Route                       | Description          |
+| -------- | --------------------------- | -------------------- |
+| `GET`    | `/api/favorites`            | Liste de vos favoris |
+| `POST`   | `/api/favorites/:articleId` | Ajouter un favori    |
+| `DELETE` | `/api/favorites/:articleId` | Retirer un favori    |
 
 ### Filtres du catalogue (`GET /api/articles`)
 
-| Paramètre | Type | Description |
-| --- | --- | --- |
-| `search` | string | Recherche texte (titre + description) |
-| `category` | string | Filtrer par catégorie (clé : `tops`, `bottoms`, `shoes`, `coats`, `accessories`, `sportswear`) |
+| Paramètre   | Type   | Description                                                                                                        |
+| ----------- | ------ | ------------------------------------------------------------------------------------------------------------------ |
+| `search`    | string | Recherche texte (titre + description)                                                                              |
+| `category`  | string | Filtrer par catégorie (clé : `tops`, `bottoms`, `shoes`, `coats`, `accessories`, `sportswear`)                     |
 | `condition` | string | Filtrer par état (clé : `neuf_avec_etiquette`, `neuf_sans_etiquette`, `tres_bon_etat`, `bon_etat`, `satisfaisant`) |
-| `priceMin` | number | Prix minimum |
-| `priceMax` | number | Prix maximum |
-| `sort` | string | Tri : `price_asc`, `price_desc`, `date_desc` (défaut) |
+| `priceMin`  | number | Prix minimum                                                                                                       |
+| `priceMax`  | number | Prix maximum                                                                                                       |
+| `sort`      | string | Tri : `price_asc`, `price_desc`, `date_desc` (défaut)                                                              |
 
 Les filtres se combinent (AND). Seuls les paramètres non vides sont envoyés.
 
 ### Données d'un article (création)
 
-| Champ | Type | Requis | Contrainte |
-| --- | --- | --- | --- |
-| `title` | string | oui | 3 à 100 caractères |
-| `description` | string | oui | 10 à 1000 caractères |
-| `price` | number | oui | > 0 |
-| `category` | string | oui | Clé de catégorie valide |
-| `size` | string | oui | Taille libre (XS, M, 42...) |
-| `condition` | string | oui | Clé de condition valide |
-| `imageUrl` | string | oui | URL d'image valide |
+| Champ         | Type   | Requis | Contrainte                  |
+| ------------- | ------ | ------ | --------------------------- |
+| `title`       | string | oui    | 3 à 100 caractères          |
+| `description` | string | oui    | 10 à 1000 caractères        |
+| `price`       | number | oui    | > 0                         |
+| `category`    | string | oui    | Clé de catégorie valide     |
+| `size`        | string | oui    | Taille libre (XS, M, 42...) |
+| `condition`   | string | oui    | Clé de condition valide     |
+| `imageUrl`    | string | oui    | URL d'image valide          |
 
 Le `userId` et le `userName` sont ajoutés automatiquement par `api.ts`.
 
@@ -210,11 +210,11 @@ Le `userId` et le `userName` sont ajoutés automatiquement par `api.ts`.
 
 L'API retourne `{ "error": "message" }` avec le code HTTP correspondant. Votre service `api.ts` lève une exception avec le message — utilisez un `try/catch` ou la gestion d'erreur de TanStack Query.
 
-| Situation | Réponse |
-| --- | --- |
-| Article inexistant | 404 |
-| Modification/suppression d'un article qui ne vous appartient pas | 403 |
-| Données invalides | 400 |
+| Situation                                                        | Réponse |
+| ---------------------------------------------------------------- | ------- |
+| Article inexistant                                               | 404     |
+| Modification/suppression d'un article qui ne vous appartient pas | 403     |
+| Données invalides                                                | 400     |
 
 ### Données au démarrage
 
@@ -284,6 +284,7 @@ Les données sont **en mémoire** : elles sont réinitialisées à chaque redém
 - **Messages d'erreur** affichés sous les champs invalides
 
 > L'utilisation d'une librairie de formulaires comme **React Hook Form** ou **Formik** est recommandée. Les formulaires contrôlés avec `useState` sont aussi acceptés. Dans tous les cas, vous devez pouvoir expliquer votre choix en soutenance.
+
 - Après création réussie : **redirection** vers la page de détail du nouvel article
 - Gérer l'erreur API (afficher le message)
 
@@ -427,22 +428,22 @@ Choisissez **au moins 2** fonctionnalités parmi les 4 suivantes. Chaque fonctio
 
 ## 8. Barème (20 points + bonus)
 
-| Catégorie | Points |
-| --- | --- |
-| **Fonctionnel obligatoire** | **10** |
-| Catalogue (liste + recherche + filtres + tri) | 3 |
-| Détail article | 1 |
-| Création d'annonce (formulaire + validation + redirection) | 2 |
-| Mes annonces + suppression avec confirmation | 1,5 |
-| Favoris (toggle + page) | 2 |
-| Navigation cohérente (liens entre pages, pas de liens cassés, retour catalogue) | 0,5 |
-| **Fonctionnalités au choix** (x2 minimum) | **3** |
-| Chaque fonctionnalité | 1,5 |
-| **Qualité technique** | **5** |
-| **Questions individuelles** | **2** |
-| **Total** | **20** |
-| **Bonus** (fonctionnalité au choix supplémentaire) | **+1,5 par fonctionnalité** |
-| **Pénalité reproductibilité** | **-3** |
+| Catégorie                                                                       | Points                      |
+| ------------------------------------------------------------------------------- | --------------------------- |
+| **Fonctionnel obligatoire**                                                     | **10**                      |
+| Catalogue (liste + recherche + filtres + tri)                                   | 3                           |
+| Détail article                                                                  | 1                           |
+| Création d'annonce (formulaire + validation + redirection)                      | 2                           |
+| Mes annonces + suppression avec confirmation                                    | 1,5                         |
+| Favoris (toggle + page)                                                         | 2                           |
+| Navigation cohérente (liens entre pages, pas de liens cassés, retour catalogue) | 0,5                         |
+| **Fonctionnalités au choix** (x2 minimum)                                       | **3**                       |
+| Chaque fonctionnalité                                                           | 1,5                         |
+| **Qualité technique**                                                           | **5**                       |
+| **Questions individuelles**                                                     | **2**                       |
+| **Total**                                                                       | **20**                      |
+| **Bonus** (fonctionnalité au choix supplémentaire)                              | **+1,5 par fonctionnalité** |
+| **Pénalité reproductibilité**                                                   | **-3**                      |
 
 **Exemple** : 2 choix = 10 + 3 + 5 + 2 = 20. Avec 3 choix = 21,5. Les 4 = 23.
 
@@ -450,12 +451,12 @@ Choisissez **au moins 2** fonctionnalités parmi les 4 suivantes. Chaque fonctio
 
 ## 9. Qualité technique (5 pts)
 
-| Critère | Points | Ce qu'on vérifie |
-| --- | --- | --- |
-| TypeScript strict | 1 | Pas de `any`, aucune erreur TypeScript (`npx tsc --noEmit` passe) |
-| Architecture propre | 2 | Composants bien découpés, appels API structurés (TanStack Query ou custom hooks), pas de logique dupliquée |
-| Gestion loading/error | 1 | Chaque page gérant des données affiche un état de chargement et un message en cas d'erreur |
-| Code lisible | 1 | Nommage clair, code formaté (`pnpm format`), pas d'erreur lint (`pnpm lint`) |
+| Critère               | Points | Ce qu'on vérifie                                                                                           |
+| --------------------- | ------ | ---------------------------------------------------------------------------------------------------------- |
+| TypeScript strict     | 1      | Pas de `any`, aucune erreur TypeScript (`npx tsc --noEmit` passe)                                          |
+| Architecture propre   | 2      | Composants bien découpés, appels API structurés (TanStack Query ou custom hooks), pas de logique dupliquée |
+| Gestion loading/error | 1      | Chaque page gérant des données affiche un état de chargement et un message en cas d'erreur                 |
+| Code lisible          | 1      | Nommage clair, code formaté (`pnpm format`), pas d'erreur lint (`pnpm lint`)                               |
 
 ### Commandes utiles
 
@@ -482,17 +483,17 @@ pnpm format         # Formatage automatique avec Prettier
 
 Avant de rendre, vérifiez chaque point :
 
-- [ ] `git clone <votre-repo>` sur une machine propre
-- [ ] `pnpm install` s'exécute sans erreur
-- [ ] `pnpm dev` lance le frontend
-- [ ] `pnpm api` lance le serveur
-- [ ] L'application fonctionne dans le navigateur
-- [ ] Le dossier `server/` n'a **pas été modifié** (on vérifiera le diff avec le scaffold)
-- [ ] `npx tsc --noEmit` — 0 erreur
-- [ ] `pnpm lint` — 0 erreur
-- [ ] Les 3 membres du groupe ont des commits dans l'historique Git
-- [ ] Le fichier `.env` n'est **pas** commité (il est dans `.gitignore`)
-- [ ] Si vous avez choisi les tests : `pnpm test` passe
+- [x] `git clone <votre-repo>` sur une machine propre
+- [x] `pnpm install` s'exécute sans erreur
+- [x] `pnpm dev` lance le frontend
+- [x] `pnpm api` lance le serveur
+- [x] L'application fonctionne dans le navigateur
+- [x] Le dossier `server/` n'a **pas été modifié** (on vérifiera le diff avec le scaffold)
+- [x] `npx tsc --noEmit` — 0 erreur
+- [x] `pnpm lint` — 0 erreur
+- [x] Les 3 membres du groupe ont des commits dans l'historique Git
+- [x] Le fichier `.env` n'est **pas** commité (il est dans `.gitignore`)
+- [x] Si vous avez choisi les tests : `pnpm test` passe
 
 **Si le projet ne se lance pas** (`clone` + `install` + `dev` + `api`) : **-3 pts** sur la note finale. C'est testé en live lors de la soutenance.
 
@@ -511,11 +512,11 @@ Avant de rendre, vérifiez chaque point :
 2. **Questions techniques** (~4 min) : choix d'architecture, explications de code
 3. **Questions individuelles** (~3 min) : chaque membre répond à :
 
-| Question | Ce qu'on évalue |
-| --- | --- |
-| Une partie du code qui mériterait d'être améliorée | Capacité d'auto-critique |
-| Une partie du code dont vous êtes fier(e) | Compréhension des bonnes pratiques |
-| Un endroit où vous avez galéré | Honnêteté, apprentissage |
+| Question                                           | Ce qu'on évalue                    |
+| -------------------------------------------------- | ---------------------------------- |
+| Une partie du code qui mériterait d'être améliorée | Capacité d'auto-critique           |
+| Une partie du code dont vous êtes fier(e)          | Compréhension des bonnes pratiques |
+| Un endroit où vous avez galéré                     | Honnêteté, apprentissage           |
 
 **Important** : chaque membre doit pouvoir expliquer l'ensemble du code. Un membre qui ne sait pas expliquer une partie peut être noté différemment du reste du groupe.
 
