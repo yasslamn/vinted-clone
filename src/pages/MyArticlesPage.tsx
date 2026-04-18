@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../services/api";
 import { getUserId } from "../lib/userId";
 import type { Article } from "../types/article";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ArticleCard from "@/components/ArticleCard";
 
 export default function MyArticlesPage() {
@@ -56,7 +56,16 @@ export default function MyArticlesPage() {
   }
   // If no articles return empty state
   if (!getUserArticlesQuery.data || getUserArticlesQuery.data.length === 0) {
-    return <div>Aucun article disponible.</div>;
+    return (
+      <>
+        <Link
+          to="/publish"
+          className="text-teal-600 hover:text-teal-700 text-sm"
+        >
+          Aucune annonce disponible. Créer-en une !
+        </Link>
+      </>
+    );
   }
   // Else return the list of articles with the ArticleCard component
   return (

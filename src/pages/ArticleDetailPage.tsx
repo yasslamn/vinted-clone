@@ -6,7 +6,7 @@ import { getUserId } from "../lib/userId";
 
 type UserIconProps = {
   className?: string;
-}
+};
 
 function UserIcon({ className }: UserIconProps) {
   return (
@@ -29,13 +29,17 @@ function UserIcon({ className }: UserIconProps) {
 
 type ErrorMessageProps = {
   message: string;
-}
+};
 
-function ErrorMessage({message}: ErrorMessageProps){
-  return <div className="w-full text-center py-12">
-    <p className="text-xl text-gray-700 mb-4">{message}</p>
-    <Link to="/" className="text-teal-600 hover:text-teal-700 text-sm">Revenir au catalogue</Link>
-  </div>
+function ErrorMessage({ message }: ErrorMessageProps) {
+  return (
+    <div className="w-full text-center py-12">
+      <p className="text-xl text-gray-700 mb-4">{message}</p>
+      <Link to="/" className="text-teal-600 hover:text-teal-700 text-sm">
+        Revenir au catalogue
+      </Link>
+    </div>
+  );
 }
 
 export default function ArticleDetailPage() {
@@ -48,8 +52,8 @@ export default function ArticleDetailPage() {
 
   const articleId: string = params.id;
 
-  const {isPending, isError, data, error} = useQuery({
-    queryKey: ['article', articleId],
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ["article", articleId],
     queryFn: () => api.get<Article>(`/api/articles/${articleId}`),
   });
 
@@ -68,25 +72,39 @@ export default function ArticleDetailPage() {
     }
   };
 
-  if (isPending){
+  if (isPending) {
     return <p>Chargement...</p>;
   }
 
-  if (isError){
+  if (isError) {
     return <ErrorMessage message={error.message}></ErrorMessage>;
   }
 
   const createdAtFormatted = new Date(data.createdAt);
   const dateFormatOptions: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric'
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
   };
 
   return (
     <div className="space-y-6">
-      <Link to="/" className="inline-block text-sm text-teal-600 hover:text-teal-700">&larr; Revenir au catalogue</Link>
-
+      {userId !== data.userId && (
+        <Link
+          to="/"
+          className="inline-block text-sm text-teal-600 hover:text-teal-700"
+        >
+          &larr; Revenir au catalogue
+        </Link>
+      )}
+      {userId === data.userId && (
+        <Link
+          to="/my-articles"
+          className="inline-block text-sm text-teal-600 hover:text-teal-700"
+        >
+          &larr; Revenir à mes annonces
+        </Link>
+      )}
       <div className="flex flex-col md:flex-row gap-8">
         <img
           src={data.imageUrl}
@@ -107,19 +125,33 @@ export default function ArticleDetailPage() {
           <div className="flex flex-wrap gap-3 text-sm">
             <div className="flex items-center gap-2">
               <span className="text-gray-400">Taille</span>
-              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">{data.size}</span>
+              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">
+                {data.size}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-gray-400">Catégorie</span>
-              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">{CATEGORIES.find((c) => c.id === data.category)?.label ?? data.category}</span>
+              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">
+                {CATEGORIES.find((c) => c.id === data.category)?.label ??
+                  data.category}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-gray-400">État</span>
-              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">{CONDITIONS.find((c) => c.value === data.condition)?.label ?? data.condition}</span>
+              <span className="px-2 py-1 font-medium border border-gray-300 rounded-md">
+                {CONDITIONS.find((c) => c.value === data.condition)?.label ??
+                  data.condition}
+              </span>
             </div>
           </div>
 
-          <p className="text-sm text-gray-400">Publiée le {createdAtFormatted.toLocaleDateString(undefined, dateFormatOptions)}</p>
+          <p className="text-sm text-gray-400">
+            Publiée le{" "}
+            {createdAtFormatted.toLocaleDateString(
+              undefined,
+              dateFormatOptions,
+            )}
+          </p>
 
           {data.userId === userId && (
             <div className="flex gap-3 pt-2">
