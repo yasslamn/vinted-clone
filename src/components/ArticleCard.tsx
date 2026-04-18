@@ -2,7 +2,7 @@ import type { Article } from "@/types/article";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Star } from "lucide-react";
-import { api } from "@/services/api";
+import { api } from "../services/api";
 import { useState } from "react";
 
 interface ArticleCardProps {
