@@ -3,27 +3,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { articleSchema, type ArticleFormValues } from "../schemas/article";
 import { CATEGORIES, CONDITIONS } from "../types/article";
 import { z } from "zod";
+import { useEffect } from "react";
 
 type ArticleFormProps = {
   onSubmit: (data: ArticleFormValues) => void;
   initialValues?: ArticleFormValues;
   isSubmitting?: boolean;
+  isDraft?: boolean;
 };
 
 export default function ArticleForm({
   onSubmit,
   initialValues,
   isSubmitting,
+  isDraft,
 }: ArticleFormProps) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<
-    z.input<typeof articleSchema>,
-    unknown, 
-    ArticleFormValues 
-  >({
+  } = useForm<z.input<typeof articleSchema>, unknown, ArticleFormValues>({
     resolver: zodResolver(articleSchema),
     defaultValues: initialValues,
   });
@@ -31,6 +31,14 @@ export default function ArticleForm({
   const inputClass =
     "w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500";
   const errorClass = "mt-1 text-sm text-red-600";
+
+  useEffect(() => {
+    if (!isDraft) return;
+    const subscription = watch((values) => {
+      localStorage.setItem("article-draft", JSON.stringify(values));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -62,7 +70,7 @@ export default function ArticleForm({
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Prix (€)
@@ -92,7 +100,7 @@ export default function ArticleForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Catégorie
