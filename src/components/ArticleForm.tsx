@@ -4,6 +4,7 @@ import { articleSchema, type ArticleFormValues } from "../schemas/article";
 import { CATEGORIES, CONDITIONS } from "../types/article";
 import { z } from "zod";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 type ArticleFormProps = {
   onSubmit: (data: ArticleFormValues) => void;
@@ -27,6 +28,8 @@ export default function ArticleForm({
     resolver: zodResolver(articleSchema),
     defaultValues: initialValues,
   });
+
+  const navigate = useNavigate();
 
   const inputClass =
     "w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500";
@@ -157,6 +160,14 @@ export default function ArticleForm({
         className="w-full rounded-full bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Publication en cours..." : "Publier"}
+      </button>
+      <button
+        type="button"
+        disabled={isSubmitting}
+        className="w-full rounded-full bg-red-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={() => navigate(-1)}
+      >
+      Annuler
       </button>
     </form>
   );
