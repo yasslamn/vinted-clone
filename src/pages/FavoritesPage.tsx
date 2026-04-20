@@ -36,7 +36,6 @@ export default function FavoritesPage() {
             <ArticleCard
               key={article.id}
               article={article}
-              onEdit={() => {}}
               isFavorite={favoriteIds.has(article.id)}
             />
           ))}
