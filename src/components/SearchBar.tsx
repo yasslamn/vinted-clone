@@ -62,7 +62,7 @@ export const SearchBar = ({
               setCategory(selected);
               onCategoryChange(selected);
             }}
-            className="flex-1 min-w-[150px] px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="flex-1 min-w-37.5 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="">Toutes les catégories</option>
             {CATEGORIES.map((cat) => (
@@ -81,7 +81,7 @@ export const SearchBar = ({
               setCondition(selected);
               onConditionChange(selected);
             }}
-            className="flex-1 min-w-[150px] px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="flex-1 min-w-37.5 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="">Tous les états</option>
             {CONDITIONS.map((cond) => (
@@ -94,13 +94,14 @@ export const SearchBar = ({
           <select
             value={sort.id}
             onChange={(e) => {
-              const selected = ORDERBY.find(
-                (s) => s.id === e.target.value,
-              ) ?? { id: "", label: "" };
+              const selected = ORDERBY.find((s) => s.id === e.target.value) ?? {
+                id: "",
+                label: "",
+              };
               setSort(selected);
               onSortChange(selected);
             }}
-            className="flex-1 min-w-[150px] px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="flex-1 min-w-37.5 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="">Trier par</option>
             {ORDERBY.map((orderBy) => (
